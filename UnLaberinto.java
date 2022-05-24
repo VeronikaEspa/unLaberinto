@@ -1,105 +1,98 @@
+package matriz.unLaberinto;
+
 import java.util.Scanner;
-class UnLaberinto{	
 
-	private static int posicionX, posicionY;
+public class UnLaberinto {
+	static int positionY, positionX;
 
-	public static void main(String[] args){
-			
-		int[][] unMapa = {
-			{0,0,0,0,1,1,1,0,1,0,0,0,0,1,1,1,0,1,0},
-			{0,1,1,0,0,0,0,0,1,0,1,1,0,0,0,0,0,1,0},
-			{0,0,1,0,1,1,1,0,1,0,0,0,0,1,0,1,0,1,0},
-			{0,0,1,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0},
-			{1,0,0,0,1,0,1,1,1,1,1,0,0,1,1,1,0,1,0},
-			{1,0,0,1,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0},
-			{1,1,0,0,1,1,1,0,1,0,0,0,0,1,1,1,0,1,0},
-			{0,1,1,0,0,0,0,0,1,0,0,1,0,1,0,0,0,0,0},
-			{0,0,0,0,1,0,1,0,1,0,1,0,0,0,0,0,0,0,0},
-			{0,1,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,1,0},
-			{0,0,0,0,1,1,1,0,1,0,0,0,0,1,1,1,0,1,0},
-			{0,1,1,0,0,0,0,0,1,0,1,1,0,0,0,0,0,1,0},
-			{0,0,1,0,1,1,1,0,1,0,0,0,0,1,0,1,0,1,0},
-			{0,0,1,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0},
-			{0,0,1,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0},
-			{1,0,0,0,1,0,1,1,1,1,1,0,0,1,1,1,0,1,0},
-			{1,0,0,1,1,0,0,0,0,0,1,0,0,0,0,0,0,0,0},
-			{1,0,0,0,1,0,1,1,1,1,1,0,0,1,1,1,0,1,0},
-			{0,0,0,0,1,0,1,0,1,0,1,0,0,0,0,0,0,0,0},
-			{0,1,0,0,0,0,0,0,0,0,0,0,0,1,1,1,0,1,0},
-			{0,0,0,0,1,1,1,0,1,0,0,0,0,1,1,1,0,1,0}
-			};
-		posicionX=2; 
-		posicionY=0;
+	static String[] Elements = {
+			" \uD83E\uDD93 ", // Personaje index = 0
+			//gato 🐈
+			"\uD83C\uDF59\uD83C\uDF59",  // Pared[0] index = 1 🌪️🌪️🌪️🌪️🌪️ 🍙🍙🍙🍙🍙🍙 🌄🌄🌄🌄🌄
+			// cajas 📦📦
+			" . ",  // Suelo[1] index = 2
+			"\uD83C\uDF0A\uD83C\uDF0A",  // Agua[2] index = 3
+			"\uD83C\uDF32\uD83C\uDF32" // Bosque[3] index = 4
+	};
 
+	public static void main(String[] args) {
+		int[][] matrix = {
+				{0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0},
+				{1,1,1,1,1,1,1,1,1,1,3,3,3,3,3,3,1},
+				{0,0,0,1,1,1,1,1,1,0,3,3,3,0,0,3,0},
+				{0,3,3,1,1,0,0,0,1,3,3,3,3,3,0,3,0},
+				{0,3,3,1,1,1,1,1,1,0,3,3,3,3,0,3,0},
+				{0,3,0,1,0,0,0,1,1,0,3,3,0,3,3,3,0},
+				{0,3,0,1,1,1,1,1,1,3,3,0,0,3,3,3,0},
+				{0,3,3,3,1,1,1,1,1,3,3,3,3,3,0,3,0},
+				{0,3,3,3,1,1,0,1,1,2,2,2,2,2,0,2,0},
+				{0,3,3,3,3,3,0,1,1,1,1,1,2,2,0,2,0},
+				{0,3,3,0,0,0,0,1,2,2,1,1,2,2,2,2,0},
+				{0,3,3,0,1,1,1,1,2,2,2,1,1,2,2,2,0},
+				{0,3,3,0,1,1,2,2,2,2,2,1,1,1,1,2,0},
+				{0,3,3,0,1,2,2,2,2,2,2,2,2,2,2,2,0},
+				{0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0}
+		};
+		positionX = 1;
+		positionY = 1;
 		do {
-			imprimeMapa(unMapa);
-		} while (procesaMovimiento(unMapa));
+			unMapa(matrix);
+		} while (teclas(matrix));
 	}
 
-	private static boolean procesaMovimiento(int[][] elMapa){
-
+	static boolean teclas(int[][] matrix) {
 		Scanner entrada = new Scanner(System.in);
 		String inputUsuario;
-		
 		inputUsuario = entrada.nextLine();
-		
-		if (inputUsuario.equals("a") && elMapa[posicionY][posicionX-1]==0) {posicionX=posicionX-1;} else 
-		if (inputUsuario.equals("d") && elMapa[posicionY][posicionX+1]==0) {posicionX=posicionX+1;} else 
-		if (inputUsuario.equals("w") && elMapa[posicionY-1][posicionX]==0) {posicionY=posicionY-1;} else 
-		if (inputUsuario.equals("s") && elMapa[posicionY+1][posicionX]==0) {posicionY=posicionY+1;} else 
-		if (inputUsuario.equals("f")) { return false;}
-
+		if(positionY >= 0 && positionX >= 0 && positionX <= matrix.length - 1 && positionY <= matrix[0].length - 1) {
+			if (inputUsuario.equals("a")
+					&& (matrix[positionX][positionY - 1] == 1
+					|| matrix[positionX][positionY - 1] == 3)) {
+				positionY = positionY - 1;
+			} else if (inputUsuario.equals("d")
+					&& (matrix[positionX][positionY + 1] == 1
+					|| matrix[positionX][positionY + 1] == 3)) {
+				positionY = positionY + 1;
+			} else if (inputUsuario.equals("w")
+					&& (matrix[positionX - 1][positionY] == 1
+					|| matrix[positionX - 1][positionY] == 3)) {
+				positionX = positionX - 1;
+			} else if (inputUsuario.equals("s")
+					&& (matrix[positionX + 1][positionY] == 1
+					|| matrix[positionX + 1][positionY] == 3)) {
+				positionX = positionX + 1;
+			} else if (inputUsuario.equals("f")) {
+				return false;
+			}
+		}
 		return true;
 	}
-	
-	private static void imprimePared(){
-		System.out.print("[#]");
-	}
-	
-	private static void imprimeSuelo(){
-		System.out.print(" . ");
-	}
 
-	private static void imprimePersonaje(){
-		System.out.print("\\O/");
-	}
-
-	private static void imprimeBordeHorizontal(int laLongitud){
-
-		System.out.print("+");
-		for (int j=0;j<laLongitud;j=j+1){
-			System.out.print("---");
-		}
-		System.out.println("+");		
-	}
-
-	private static void imprimeBordeVertical(boolean bordeDerecho){
-		System.out.print("|");
-		if (bordeDerecho) {System.out.println();}
-	}
-	
-	private static void imprimeMapa(int[][] mapaPorImprimir){
-		
-		imprimeBordeHorizontal(mapaPorImprimir[0].length);
-		
-		for (int i=0; i<mapaPorImprimir.length; i=i+1){
-			imprimeBordeVertical(false);
-			for (int j=0; j<mapaPorImprimir[i].length; j=j+1) {
-				if (i==posicionY && j==posicionX) {
-					imprimePersonaje();
+	static void unMapa(int[][] matrix) {
+		for (int i = 0; i < matrix.length; i++) {
+			for (int j = 0; j < matrix[i].length; j++) {
+				if (i == positionX && j == positionY) {
+					printElements(0);
 				} else {
-					if (mapaPorImprimir[i][j]==0) {
-						imprimeSuelo();	
-					} else if (mapaPorImprimir[i][j]==1) {	
-						imprimePared();	
+					if (matrix[i][j] == 0) {
+						printElements(1);
+					} else if (matrix[i][j] == 1) {
+						printElements(2);
+					}
+					else if (matrix[i][j] == 2) {
+						printElements(3);
+					}
+					else if (matrix[i][j] == 3) {
+						printElements(4);
 					}
 				}
 			}
-			imprimeBordeVertical(true);
-		}		
-		imprimeBordeHorizontal(mapaPorImprimir[0].length);
-		
-		System.out.println("Personaje en X:["+posicionX+"] Y:["+posicionY+"]");
+			System.out.println();
+		}
+		System.out.println("Personaje en X: " + positionY + " , en Y: " + positionX);
 	}
-	
+
+	static void printElements(int index){
+		System.out.print(Elements[index]);
+	}
 }
